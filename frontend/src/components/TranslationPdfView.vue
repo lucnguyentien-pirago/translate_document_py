@@ -1,47 +1,23 @@
 <template>
-  <div class="pdf-translation-container">
+  <div class="flex flex-col gap-4">
     <TabView>
-      <TabPanel header="Xem trước">
-        <div class="pdf-preview">
-          <div v-for="(page, index) in translatedPages" :key="index" class="pdf-page">
-            <div class="page-header">
-              <h3>Trang {{ page.page }}</h3>
-            </div>
-            <div class="page-content">
-              <div class="original-content">
-                <h4>Nội dung gốc</h4>
-                <div class="content-box">{{ getOriginalContent(page.page) }}</div>
-              </div>
-              <div class="translated-content">
-                <h4>Bản dịch</h4>
-                <div class="content-box">{{ page.translated_content }}</div>
-              </div>
-            </div>
+      <TabPanel header="Nội dung gốc">
+        <div class="grid grid-cols-1 gap-4">
+          <div v-for="(item, index) in content" :key="index" class="bg-white rounded-lg p-4 shadow">
+            <p class="text-gray-900">{{ item.content }}</p>
           </div>
         </div>
       </TabPanel>
-      <TabPanel header="Chỉnh sửa">
-        <div class="pdf-edit">
-          <div v-for="(page, index) in translatedPages" :key="index" class="pdf-page-edit">
-            <div class="page-header">
-              <h3>Trang {{ page.page }}</h3>
-            </div>
-            <div class="page-content-edit">
-              <div class="original-content">
-                <h4>Nội dung gốc</h4>
-                <div class="content-box">{{ getOriginalContent(page.page) }}</div>
-              </div>
-              <div class="translated-content">
-                <h4>Bản dịch</h4>
-                <Textarea
-                  v-model="translatedPages[index].translated_content"
-                  :autoResize="true"
-                  rows="10"
-                  class="w-full"
-                  @input="updateTranslation"
-                />
-              </div>
-            </div>
+      <TabPanel header="Bản dịch">
+        <div class="grid grid-cols-1 gap-4">
+          <div v-for="(item, index) in content" :key="index" class="bg-white rounded-lg p-4 shadow">
+            <Textarea
+              v-model="translations[index]"
+              :autoResize="true"
+              rows="3"
+              class="w-full"
+              @input="handleTranslationChange(index)"
+            />
           </div>
         </div>
       </TabPanel>
@@ -49,56 +25,61 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, PropType, ref, watch } from 'vue'
+import type { DocumentContent, TranslationViewProps, TranslationViewEmits } from '@/types'
+
+export default defineComponent({
   name: 'TranslationPdfView',
+  
   props: {
     content: {
-      type: Array,
+      type: Array as PropType<DocumentContent[]>,
       required: true
     },
     translatedContent: {
-      type: Array,
+      type: Array as PropType<DocumentContent[] | null>,
       default: null
     }
   },
-  data() {
-    return {
-      translatedPages: []
-    };
+
+  emits: {
+    'update:translatedContent': (value: DocumentContent[]) => Array.isArray(value)
   },
-  watch: {
-    translatedContent: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal) {
-          console.log('TranslationPdfView: Nhận dữ liệu từ parent', newVal);
-          this.translatedPages = JSON.parse(JSON.stringify(newVal)); // Deep copy để tránh tham chiếu
-        }
+
+  setup(props: TranslationViewProps, { emit }) {
+    const translations = ref<string[]>([])
+
+    // Khởi tạo translations từ translatedContent hoặc content
+    watch(() => props.content, (newContent) => {
+      translations.value = newContent.map(item => 
+        item.translated_content || item.content
+      )
+    }, { immediate: true })
+
+    // Cập nhật khi có thay đổi từ bên ngoài
+    watch(() => props.translatedContent, (newTranslated) => {
+      if (newTranslated) {
+        translations.value = newTranslated.map(item => 
+          item.translated_content || item.content
+        )
       }
+    })
+
+    const handleTranslationChange = (index: number) => {
+      const updatedContent = props.content.map((item, i) => ({
+        ...item,
+        translated_content: translations.value[i]
+      }))
+      emit('update:translatedContent', updatedContent)
     }
-  },
-  methods: {
-    getOriginalContent(pageNumber) {
-      const page = this.content.find(p => p.page === pageNumber);
-      return page ? page.content : '';
-    },
-    updateTranslation() {
-      console.log('Cập nhật nội dung đã dịch PDF:', this.translatedPages);
-      // Kiểm tra xem "translated_content" có trong tất cả các trang không
-      const allHaveTranslatedContent = this.translatedPages.every(page => 
-        // page.hasOwnProperty('translated_content') && 
-        page.translated_content !== undefined && 
-        page.translated_content !== null
-      );
-      
-      console.log('Tất cả các trang đều có nội dung dịch?', allHaveTranslatedContent);
-      
-      // Emit sự kiện với dữ liệu mới
-      this.$emit('update:translatedContent', this.translatedPages);
+
+    return {
+      translations,
+      handleTranslationChange
     }
   }
-};
+})
 </script>
 
 <style scoped>

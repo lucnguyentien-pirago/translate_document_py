@@ -1,144 +1,101 @@
 <template>
-  <div class="excel-translation-container">
+  <div class="flex flex-col gap-4">
     <TabView>
-      <TabPanel header="Xem trước">
-        <div class="excel-preview">
-          <TabView>
-            <TabPanel v-for="(sheet, sheetIndex) in translatedSheets" :key="sheetIndex" :header="sheet.sheet_name">
-              <DataTable :value="getTableData(sheet)" stripedRows class="excel-table">
-                <Column field="address" header="Ô" style="width: 10%"></Column>
-                <Column field="original" header="Nội dung gốc" style="width: 45%"></Column>
-                <Column field="translated" header="Bản dịch" style="width: 45%"></Column>
-              </DataTable>
-            </TabPanel>
-          </TabView>
+      <TabPanel header="Nội dung gốc">
+        <div class="overflow-x-auto">
+          <DataTable :value="content" responsiveLayout="scroll" class="min-w-full">
+            <Column v-for="col in columns" :key="col.field" :field="col.field" :header="col.header" />
+          </DataTable>
         </div>
       </TabPanel>
-      <TabPanel header="Chỉnh sửa">
-        <div class="excel-edit">
-          <TabView>
-            <TabPanel v-for="(sheet, sheetIndex) in translatedSheets" :key="sheetIndex" :header="sheet.sheet_name">
-              <div class="sheet-edit-container">
-                <div v-for="(cell, cellIndex) in sheet.cells" :key="cellIndex" class="cell-edit-row">
-                  <div class="cell-address">{{ cell.address }}</div>
-                  <div class="cell-original">{{ cell.content }}</div>
-                  <div class="cell-translated">
-                    <Textarea
-                      v-model="translatedSheets[sheetIndex].cells[cellIndex].translated_content"
-                      :autoResize="true"
-                      rows="2"
-                      class="w-full"
-                      @input="updateTranslation"
-                    />
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-          </TabView>
+      <TabPanel header="Bản dịch">
+        <div class="overflow-x-auto">
+          <DataTable :value="translatedRows" responsiveLayout="scroll" class="min-w-full">
+            <Column v-for="col in columns" :key="col.field" :field="col.field" :header="col.header">
+              <template #body="{ data, field }">
+                <Textarea
+                  v-model="data[field]"
+                  :autoResize="true"
+                  rows="2"
+                  class="w-full"
+                  @input="handleTranslationChange(data, field)"
+                />
+              </template>
+            </Column>
+          </DataTable>
         </div>
       </TabPanel>
     </TabView>
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, PropType, ref, computed, watch } from 'vue'
+import type { DocumentContent } from '@/types'
+
+interface ExcelColumn {
+  field: string;
+  header: string;
+}
+
+interface ExcelRow {
+  [key: string]: string;
+}
+
+export default defineComponent({
   name: 'TranslationExcelView',
+  
   props: {
     content: {
-      type: Array,
+      type: Array as PropType<ExcelRow[]>,
       required: true
     },
     translatedContent: {
-      type: Array,
+      type: Array as PropType<ExcelRow[] | null>,
       default: null
     }
   },
-  data() {
-    return {
-      translatedSheets: []
-    };
+
+  emits: {
+    'update:translatedContent': (value: ExcelRow[]) => Array.isArray(value)
   },
-  watch: {
-    translatedContent: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal) {
-          this.translatedSheets = [...newVal];
+
+  setup(props, { emit }) {
+    const columns = ref<ExcelColumn[]>([])
+    const translatedRows = ref<ExcelRow[]>([])
+
+    // Tạo cấu trúc cột từ dữ liệu đầu vào
+    watch(() => props.content, (newContent) => {
+      if (newContent && newContent.length > 0) {
+        // Lấy tất cả các key từ row đầu tiên
+        const firstRow = newContent[0]
+        columns.value = Object.keys(firstRow).map(key => ({
+          field: key,
+          header: key
+        }))
+      }
+    }, { immediate: true })
+
+    // Khởi tạo dữ liệu dịch
+    watch([() => props.content, () => props.translatedContent], ([newContent, newTranslated]) => {
+      if (newContent) {
+        if (newTranslated) {
+          translatedRows.value = [...newTranslated]
+        } else {
+          translatedRows.value = newContent.map(row => ({ ...row }))
         }
       }
+    }, { immediate: true })
+
+    const handleTranslationChange = (row: ExcelRow, field: string) => {
+      emit('update:translatedContent', translatedRows.value)
     }
-  },
-  methods: {
-    getTableData(sheet) {
-      return sheet.cells.map(cell => ({
-        address: cell.address,
-        original: cell.content,
-        translated: cell.translated_content
-      }));
-    },
-    updateTranslation() {
-      this.$emit('update:translatedContent', this.translatedSheets);
+
+    return {
+      columns,
+      translatedRows,
+      handleTranslationChange
     }
   }
-};
-</script>
-
-<style scoped>
-.excel-translation-container {
-  width: 100%;
-}
-
-.excel-preview, .excel-edit {
-  width: 100%;
-}
-
-.excel-table {
-  width: 100%;
-}
-
-.sheet-edit-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem 0;
-}
-
-.cell-edit-row {
-  display: grid;
-  grid-template-columns: 10% 45% 45%;
-  gap: 1rem;
-  align-items: center;
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--surface-border);
-}
-
-.cell-edit-row:nth-child(even) {
-  background-color: var(--surface-ground);
-}
-
-.cell-address {
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-.cell-original {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  padding: 0.5rem;
-  background-color: var(--surface-card);
-  border: 1px solid var(--surface-border);
-  border-radius: 4px;
-}
-
-.cell-translated {
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .cell-edit-row {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-}
-</style> 
+})
+</script> 

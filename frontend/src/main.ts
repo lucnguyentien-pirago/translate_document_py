@@ -23,17 +23,17 @@ import Dialog from 'primevue/dialog'
 import 'primevue/resources/themes/lara-light-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
-import 'primeflex/primeflex.css'
 
 // Import CSS chung của ứng dụng
-import './assets/styles/main.scss'
+import './assets/styles/main.css'
 
 const app = createApp(App)
 
 // Sử dụng PrimeVue
 app.use(PrimeVue, {
   ripple: true,
-  inputStyle: 'filled'
+  inputStyle: 'filled',
+  unstyled: true,
 })
 app.use(ToastService)
 app.use(router)

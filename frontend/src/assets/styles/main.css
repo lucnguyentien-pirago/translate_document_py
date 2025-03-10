@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary-color: #6366F1;
+    --primary-color-text: #ffffff;
+    --primary-300: #A5B4FC;
+    --primary-600: #4F46E5;
+    --primary-700: #4338CA;
+    --surface-ground: #F8F9FA;
+    --surface-section: #ffffff;
+    --surface-card: #ffffff;
+    --surface-border: #DEE2E6;
+    --text-color: #495057;
+    --text-color-secondary: #6C757D;
+  }
+
+  body {
+    @apply font-sans antialiased bg-surface-ground text-gray-900;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply flex flex-col min-h-screen;
+  }
+
+  .app-header {
+    @apply bg-primary text-white py-md px-xl shadow-md;
+  }
+
+  .app-title {
+    @apply text-center;
+  }
+
+  .app-title h1 {
+    @apply text-3xl font-semibold m-0;
+  }
+
+  .app-title p {
+    @apply text-base mt-xs opacity-90;
+  }
+
+  .app-content {
+    @apply flex-1 p-xl max-w-[var(--app-max-width)] mx-auto w-full;
+  }
+
+  .app-footer {
+    @apply bg-surface-section py-md text-center text-sm text-gray-600 border-t border-surface-border;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-md transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark;
+  }
+} 

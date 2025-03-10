@@ -34,12 +34,21 @@ cd backend
 pip install -r ../requirements.txt
 ```
 
-2. Cài đặt Tesseract OCR:
-   - Windows: Tải từ https://github.com/UB-Mannheim/tesseract/wiki
-   - Linux: `sudo apt-get install tesseract-ocr`
-   - macOS: `brew install tesseract`
+2. Cài đặt fonts cho tiếng Việt:
 
-3. Cài đặt Poppler:
+```bash
+cd backend
+python setup_fonts.py
+```
+
+Script này sẽ tự động tải các font cần thiết và kiểm tra môi trường của bạn.
+
+3. Cài đặt Tesseract OCR:
+   - Windows: Tải từ https://github.com/UB-Mannheim/tesseract/wiki
+   - Linux: `sudo apt-get install tesseract-ocr tesseract-ocr-jpn tesseract-ocr-vie`
+   - macOS: `brew install tesseract tesseract-lang`
+
+4. Cài đặt Poppler:
    - Windows: Tải từ https://github.com/oschwartz10612/poppler-windows/releases/
    - Linux: `sudo apt-get install poppler-utils`
    - macOS: `brew install poppler`
@@ -66,7 +75,7 @@ Backend sẽ chạy tại http://localhost:8000
 
 ```bash
 cd frontend
-npm run serve
+npm run dev
 ```
 
 Frontend sẽ chạy tại http://localhost:8080
@@ -78,6 +87,35 @@ Frontend sẽ chạy tại http://localhost:8080
 3. Hệ thống sẽ tự động trích xuất và dịch nội dung
 4. Xem trước và chỉnh sửa bản dịch nếu cần
 5. Nhấn nút "Xuất file đã dịch" để tải xuống tài liệu đã dịch
+
+## Xử lý lỗi phổ biến
+
+### Lỗi hiển thị tiếng Việt trong PDF
+
+Nếu PDF xuất ra hiển thị các ô vuông thay vì ký tự tiếng Việt:
+
+1. **Chạy script setup_fonts.py**:
+   ```bash
+   cd backend
+   python setup_fonts.py
+   ```
+   Script này sẽ tự động tải và cài đặt các font Unicode hỗ trợ tiếng Việt.
+
+2. **Kiểm tra thư mục fonts**:
+   Đảm bảo thư mục `backend/resources/fonts` chứa các file:
+   - DejaVuSans.ttf
+   - DejaVuSans-Bold.ttf
+   - NotoSansVietnamese-Regular.ttf
+
+3. **Sửa phương pháp tạo PDF**:
+   Mặc định, hệ thống sẽ thử hai phương pháp tạo PDF (Platypus và Canvas) để đảm bảo tiếng Việt hiển thị đúng. Nếu vẫn có vấn đề, bạn có thể chỉnh sửa file `backend/app/utils/pdf_handler.py` để chỉ sử dụng phương pháp Canvas.
+
+### Lỗi kết nối từ Frontend đến Backend
+
+Nếu frontend không thể kết nối tới backend, hãy kiểm tra:
+- Backend đang chạy ở địa chỉ và cổng đúng
+- Không có tường lửa chặn kết nối
+- URL API đã được cấu hình đúng trong file `frontend/src/views/HomeView.vue`
 
 ## Lưu ý
 

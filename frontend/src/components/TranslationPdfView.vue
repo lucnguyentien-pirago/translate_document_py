@@ -72,7 +72,8 @@ export default {
       immediate: true,
       handler(newVal) {
         if (newVal) {
-          this.translatedPages = [...newVal];
+          console.log('TranslationPdfView: Nhận dữ liệu từ parent', newVal);
+          this.translatedPages = JSON.parse(JSON.stringify(newVal)); // Deep copy để tránh tham chiếu
         }
       }
     }
@@ -84,6 +85,16 @@ export default {
     },
     updateTranslation() {
       console.log('Cập nhật nội dung đã dịch PDF:', this.translatedPages);
+      // Kiểm tra xem "translated_content" có trong tất cả các trang không
+      const allHaveTranslatedContent = this.translatedPages.every(page => 
+        // page.hasOwnProperty('translated_content') && 
+        page.translated_content !== undefined && 
+        page.translated_content !== null
+      );
+      
+      console.log('Tất cả các trang đều có nội dung dịch?', allHaveTranslatedContent);
+      
+      // Emit sự kiện với dữ liệu mới
       this.$emit('update:translatedContent', this.translatedPages);
     }
   }

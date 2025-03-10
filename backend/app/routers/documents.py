@@ -111,15 +111,30 @@ async def export_document(
         import json
         translated_data = json.loads(translated_content)
         
-        # Debug thông tin
-        print(f"File type: {file_type}")
-        print(f"Filename: {original_file.filename}")
-        print(f"Translated data structure: {type(translated_data)}")
+        # Debug thông tin chi tiết hơn
+        print("=" * 50)
+        print(f"DEBUG EXPORT: File type: {file_type}")
+        print(f"DEBUG EXPORT: Filename: {original_file.filename}")
+        print(f"DEBUG EXPORT: Translated data type: {type(translated_data)}")
+        print(f"DEBUG EXPORT: Translated data length: {len(translated_data)}")
+        
         if len(translated_data) > 0:
             if file_type == "pdf":
-                print(f"Sample translated item: {translated_data[0].keys()}")
+                print(f"DEBUG EXPORT: Sample translated item keys: {list(translated_data[0].keys())}")
                 if "translated_content" in translated_data[0]:
-                    print(f"Has translated content: {bool(translated_data[0].get('translated_content'))}")
+                    tc = translated_data[0]["translated_content"]
+                    print(f"DEBUG EXPORT: Sample translated content (first 100 chars): {tc[:100]}")
+                    print(f"DEBUG EXPORT: Has translated content: {bool(tc)}")
+                else:
+                    print("DEBUG EXPORT: MISSING translated_content in data!")
+                    
+                    # Kiểm tra có cấu trúc lồng nhau không
+                    if "content" in translated_data[0] and isinstance(translated_data[0]["content"], dict):
+                        print("DEBUG EXPORT: Có vẻ như dữ liệu lồng nhau, thử restructure")
+                        # Cấu trúc lại dữ liệu
+                        for item in translated_data:
+                            if "content" in item and isinstance(item["content"], dict) and "translated_content" in item["content"]:
+                                item["translated_content"] = item["content"]["translated_content"]
         
         # Tạo file mới với nội dung đã dịch
         if file_type == "pdf":
@@ -140,6 +155,9 @@ async def export_document(
         # Xử lý tên file với mã hóa URL để tránh vấn đề với ký tự tiếng Việt
         encoded_filename = urllib.parse.quote(filename)
         
+        print(f"DEBUG EXPORT: Xuất file thành công, size={len(output_content)} bytes")
+        print("=" * 50)
+        
         # Trả về file đã dịch
         return StreamingResponse(
             io.BytesIO(output_content),
@@ -150,5 +168,8 @@ async def export_document(
         # In ra lỗi chi tiết để debug
         import traceback
         error_detail = f"{str(e)}\n{traceback.format_exc()}"
+        print("=" * 50)
+        print("DEBUG EXPORT ERROR:")
         print(error_detail)
+        print("=" * 50)
         raise HTTPException(status_code=500, detail=str(e)) 

@@ -81,7 +81,8 @@ import TranslationExcelView from '@/components/TranslationExcelView.vue';
 import TranslationWordView from '@/components/TranslationWordView.vue';
 
 // Cấu hình API URL
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+console.log('API URL:', API_URL);
 
 export default {
   name: 'HomeView',
@@ -192,7 +193,23 @@ export default {
     },
     
     updateTranslatedContent(newContent) {
-      this.translatedContent = newContent;
+      console.log('HomeView: Cập nhật translated content', newContent);
+      
+      // Kiểm tra cấu trúc dữ liệu
+      if (Array.isArray(newContent)) {
+        // Kiểm tra từng phần tử trong mảng
+        const validItems = newContent.filter(item => 
+          item && typeof item === 'object' && 
+          ('translated_content' in item || 'content' in item)
+        );
+        
+        console.log(`HomeView: Dữ liệu hợp lệ? ${validItems.length === newContent.length}`);
+        
+        // Gán dữ liệu mới
+        this.translatedContent = newContent;
+      } else {
+        console.error('HomeView: Dữ liệu không phải dạng mảng', newContent);
+      }
     },
     
     async exportDocument() {
@@ -205,9 +222,40 @@ export default {
         console.log('Original filename:', this.originalFilename);
         console.log('Translated content structure:', this.translatedContent);
         
+        // Đảm bảo cấu trúc dữ liệu đúng
+        let translatedContentToSend = this.translatedContent;
+        
+        // Kiểm tra và sửa dữ liệu nếu cần
+        if (this.fileType === 'pdf' && Array.isArray(this.translatedContent)) {
+          // Kiểm tra xem mỗi item có thuộc tính translated_content không
+          const allItemsHaveTranslation = this.translatedContent.every(
+            item => item && typeof item === 'object' && 'translated_content' in item
+          );
+          
+          console.log('Tất cả items có thuộc tính translated_content:', allItemsHaveTranslation);
+          
+          if (!allItemsHaveTranslation) {
+            console.warn('Cần sửa cấu trúc dữ liệu translated_content');
+            
+            // Sửa cấu trúc dữ liệu
+            translatedContentToSend = this.translatedContent.map(item => {
+              if (!('translated_content' in item) && 'content' in item) {
+                // Nếu không có translated_content nhưng có content, sao chép content sang translated_content
+                return {
+                  ...item,
+                  translated_content: item.content
+                };
+              }
+              return item;
+            });
+            
+            console.log('Dữ liệu đã được sửa:', translatedContentToSend);
+          }
+        }
+        
         const formData = new FormData();
         formData.append('file_type', this.fileType);
-        formData.append('translated_content', JSON.stringify(this.translatedContent));
+        formData.append('translated_content', JSON.stringify(translatedContentToSend));
         formData.append('original_file', this.originalFile);
         
         const response = await axios.post(`${API_URL}/api/documents/export`, formData, {

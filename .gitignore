@@ -242,3 +242,5 @@ cython_debug/
 #.idea/
 
 /frontend/node_modules/
+/backend/app/__pycache__
+/backend/app/**/__pycache__

@@ -13,10 +13,28 @@ class Translator:
             return text
         
         try:
+            # DEBUG
+            print(f"DEBUG TRANSLATE: Văn bản gốc ({len(text)} ký tự): {text[:100]}...")
+            
+            # Phát hiện ngôn ngữ tiếng Nhật
+            has_japanese = any(ord(c) > 0x3000 and ord(c) < 0x30FF for c in text) or \
+                           any(ord(c) > 0x4E00 and ord(c) < 0x9FFF for c in text)
+            
+            if has_japanese:
+                print("DEBUG TRANSLATE: Phát hiện văn bản tiếng Nhật, thiết lập nguồn là 'ja'")
+                # Thiết lập nguồn cụ thể là tiếng Nhật để dịch tốt hơn
+                self.translator = GoogleTranslator(source='ja', target='vi')
+            else:
+                # Để tự động phát hiện ngôn ngữ khác
+                self.translator = GoogleTranslator(source='auto', target='vi')
+            
             # Giới hạn độ dài văn bản để tránh lỗi từ API
             chunks = self._split_text(text, 4800)  # GoogleTranslator limit ~5000 chars
             translated_chunks = [self.translator.translate(chunk) for chunk in chunks if chunk]
-            return ' '.join(translated_chunks)
+            result = ' '.join(translated_chunks)
+            
+            print(f"DEBUG TRANSLATE: Văn bản đã dịch ({len(result)} ký tự): {result[:100]}...")
+            return result
         except Exception as e:
             print(f"Lỗi khi dịch văn bản: {str(e)}")
             return text
@@ -25,14 +43,24 @@ class Translator:
         """
         Dịch nội dung từ file PDF
         """
+        print(f"DEBUG TRANSLATE_PDF: Nhận được {len(pdf_content)} trang để dịch")
+        
         result = []
-        for page in pdf_content:
+        for i, page in enumerate(pdf_content):
+            print(f"DEBUG TRANSLATE_PDF: Dịch trang {i+1}/{len(pdf_content)}")
+            
+            if "content" not in page:
+                print(f"DEBUG TRANSLATE_PDF: Không tìm thấy 'content' trong dữ liệu trang. Keys: {page.keys()}")
+                continue
+            
             translated_content = self.translate_text(page["content"])
             result.append({
                 "page": page["page"],
                 "content": page["content"],
                 "translated_content": translated_content
             })
+        
+        print(f"DEBUG TRANSLATE_PDF: Hoàn thành dịch {len(result)}/{len(pdf_content)} trang")
         return result
     
     def translate_excel_content(self, excel_content: List[Dict[str, List[Dict[str, str]]]]) -> List[Dict[str, List[Dict[str, str]]]]:

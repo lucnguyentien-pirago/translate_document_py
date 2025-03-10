@@ -311,30 +311,28 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .home-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  @include flex-column;
+  gap: var(--spacing-xl);
 }
 
 .upload-card {
   width: 100%;
+  @include card-shadow;
 }
 
 .upload-section {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   align-items: center;
 }
 
 .loading-container {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  gap: 1rem;
+  padding: var(--spacing-xl);
+  gap: var(--spacing-md);
 }
 
 .document-content {
@@ -350,6 +348,6 @@ export default {
 
 .card-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 </style> 

@@ -25,13 +25,16 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
-// Import CSS chung của ứng dụng (nếu có)
-import './assets/main.css'
+// Import CSS chung của ứng dụng
+import './assets/styles/main.scss'
 
 const app = createApp(App)
 
 // Sử dụng PrimeVue
-app.use(PrimeVue)
+app.use(PrimeVue, {
+  ripple: true,
+  inputStyle: 'filled'
+})
 app.use(ToastService)
 app.use(router)
 

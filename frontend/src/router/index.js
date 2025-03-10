@@ -10,8 +10,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.VITE_BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_URL || '/'),
   routes
 })
 
-export default router 
+export default router

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
-import path from 'path'
+import path from 'node:path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,11 +9,18 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '~': path.resolve(__dirname, 'src'),
+      '~': fileURLToPath(new URL('./src', import.meta.url)),
     }
   },
   css: {
     devSourcemap: true,
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @import "primeflex/primeflex.css";
+        `
+      }
+    }
   },
   server: {
     port: 8080,

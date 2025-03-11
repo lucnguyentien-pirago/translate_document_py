@@ -1,49 +1,52 @@
 <template>
-  <div class="flex flex-col gap-8">
-    <Card>
-      <template #title>
-        Tải lên tài liệu
-      </template>
-      <template #content>
-        <div class="flex flex-col items-center">
-          <FileUpload
-            name="file"
-            :customUpload="true"
-            @uploader="handleFileUpload"
-            :auto="true"
-            chooseLabel="Chọn tài liệu"
-            uploadLabel="Tải lên"
-            cancelLabel="Hủy"
-            :maxFileSize="10000000"
-            accept=".pdf,.docx,.doc,.xlsx,.xls"
-            class="w-full"
-          >
-            <template #empty>
-              <p class="text-center text-gray-600">Kéo và thả file PDF, Word hoặc Excel vào đây để tải lên.</p>
-              <p class="text-center text-gray-600">Hỗ trợ dịch từ tiếng Nhật và các ngôn ngữ khác sang tiếng Việt.</p>
-            </template>
-          </FileUpload>
-        </div>
-      </template>
-    </Card>
-
-    <div v-if="isLoading" class="flex flex-col items-center justify-center p-8 gap-4">
-      <ProgressSpinner />
-      <p class="text-gray-600">{{ loadingMessage }}</p>
-    </div>
-
-    <div v-if="documentContent && !isLoading" class="w-full">
+  <div class="grid">
+    <div class="col-12">
       <Card>
         <template #title>
-          <div class="flex justify-between items-center w-full">
+          Tải lên tài liệu
+        </template>
+        <template #content>
+          <div class="flex align-items-center justify-content-center flex-column">
+            <FileUpload
+              name="file"
+              :customUpload="true"
+              @uploader="handleFileUpload"
+              :auto="true"
+              chooseLabel="Chọn tài liệu"
+              uploadLabel="Tải lên"
+              cancelLabel="Hủy"
+              :maxFileSize="10000000"
+              accept=".pdf,.docx,.doc,.xlsx,.xls"
+              class="w-full"
+            >
+              <template #empty>
+                <p class="text-center text-color-secondary mb-2">Kéo và thả file PDF, Word hoặc Excel vào đây để tải lên.</p>
+                <p class="text-center text-color-secondary">Hỗ trợ dịch từ tiếng Nhật và các ngôn ngữ khác sang tiếng Việt.</p>
+              </template>
+            </FileUpload>
+          </div>
+        </template>
+      </Card>
+    </div>
+
+    <div v-if="isLoading" class="col-12">
+      <div class="flex align-items-center justify-content-center flex-column p-4 gap-4">
+        <ProgressSpinner />
+        <p class="text-color-secondary">{{ loadingMessage }}</p>
+      </div>
+    </div>
+
+    <div v-if="documentContent && !isLoading" class="col-12">
+      <Card>
+        <template #title>
+          <div class="flex justify-content-between align-items-center w-full">
             <span>Nội dung tài liệu</span>
-            <div class="flex gap-2">
+            <div class="flex">
               <Button 
                 label="Xuất file đã dịch" 
                 icon="pi pi-download" 
                 @click="exportDocument" 
                 :disabled="!translatedContent"
-                class="p-button-primary"
               />
             </div>
           </div>

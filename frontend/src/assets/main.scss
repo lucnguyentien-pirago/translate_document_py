@@ -1,0 +1,60 @@
+// Các styles chính của ứng dụng
+
+// Biến màu và font
+:root {
+  --primary-color: #6366F1;
+  --primary-color-text: #ffffff;
+  --primary-500: #6366F1;
+  --primary-600: #4F46E5;
+  --primary-700: #4338CA;
+  --surface-ground: #F8F9FA;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-border: #DEE2E6;
+  --text-color: #495057;
+  --text-color-secondary: #6C757D;
+  --font-family: 'Roboto', sans-serif;
+  --app-max-width: 1200px;
+}
+
+// Reset styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--surface-ground);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}
+
+// Container
+.container {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+// Utilities
+.p-fileupload-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 2px dashed var(--surface-border);
+  background: var(--surface-ground);
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.p-button {
+  margin-right: 0.5rem;
+}
+
+.p-card {
+  margin-bottom: 1rem;
+} 

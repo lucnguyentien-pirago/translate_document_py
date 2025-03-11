@@ -1,10 +1,26 @@
+/* Tạm thời vô hiệu hóa Tailwind để tránh xung đột với PrimeFlex
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+*/
 
-/* CSS chung cho toàn bộ ứng dụng */
+:root {
+  --primary-color: #6366F1;
+  --primary-color-text: #ffffff;
+  --primary-300: #A5B4FC;
+  --primary-600: #4F46E5;
+  --primary-700: #4338CA;
+  --surface-ground: #F8F9FA;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-border: #DEE2E6;
+  --text-color: #495057;
+  --text-color-secondary: #6C757D;
+  --font-family: 'Roboto', sans-serif;
+  --app-max-width: 1200px;
+}
 
-/* Reset các style mặc định */
+/* Style chung */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -19,24 +35,10 @@ body {
   padding: 0;
 }
 
-/* Style chung cho container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* Style chung cho button */
-button {
-  cursor: pointer;
-}
-
-/* Style chung cho heading */
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem;
 }
 
-/* Style cho link */
 a {
   color: var(--primary-color);
   text-decoration: none;
@@ -46,69 +48,46 @@ a:hover {
   text-decoration: underline;
 }
 
-@layer base {
-  :root {
-    --primary-color: #6366F1;
-    --primary-color-text: #ffffff;
-    --primary-300: #A5B4FC;
-    --primary-600: #4F46E5;
-    --primary-700: #4338CA;
-    --surface-ground: #F8F9FA;
-    --surface-section: #ffffff;
-    --surface-card: #ffffff;
-    --surface-border: #DEE2E6;
-    --text-color: #495057;
-    --text-color-secondary: #6C757D;
-    --font-family: 'Roboto', sans-serif;
-  }
-
-  body {
-    font-family: var(--font-family);
-    background-color: var(--surface-ground);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-  }
+/* Container */
+.container {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  width: 100%;
 }
 
-@layer components {
-  .app-container {
-    @apply flex flex-col min-h-screen;
-  }
+/* Bổ sung một số class utility */
+.text-center {
+  text-align: center;
+}
 
-  .app-header {
-    @apply bg-primary text-white py-2 px-4 shadow-md;
-  }
+.text-lg {
+  font-size: 1.125rem;
+}
 
-  .app-title {
-    @apply text-center;
-  }
+.text-xl {
+  font-size: 1.25rem;
+}
 
-  .app-title h1 {
-    @apply text-3xl font-semibold m-0;
-  }
+.text-2xl {
+  font-size: 1.5rem;
+}
 
-  .app-title p {
-    @apply text-base mt-1 opacity-90;
-  }
+.text-3xl {
+  font-size: 1.875rem;
+}
 
-  .app-content {
-    @apply flex-1 p-4 max-w-6xl mx-auto w-full;
-  }
+.font-bold {
+  font-weight: 700;
+}
 
-  .app-footer {
-    @apply bg-surface-section py-3 text-center text-sm text-gray-600 border-t border-surface-border;
-  }
+.m-0 {
+  margin: 0;
+}
 
-  .card {
-    @apply bg-white rounded-lg shadow-md p-4;
-  }
+.mt-2 {
+  margin-top: 0.5rem;
+}
 
-  .btn {
-    @apply px-4 py-2 rounded-md transition-colors;
-  }
-
-  .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-600;
-  }
+.w-full {
+  width: 100%;
 }

@@ -19,21 +19,21 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Dialog from 'primevue/dialog'
 
-// PrimeVue CSS
-import 'primevue/resources/themes/lara-light-indigo/theme.css'
-import 'primevue/resources/primevue.min.css'
-import 'primeicons/primeicons.css'
+// PrimeVue CSS - Thứ tự rất quan trọng: theme -> core -> icons -> primeflex
+import 'primevue/resources/themes/lara-light-indigo/theme.css'  // Theme
+import 'primevue/resources/primevue.min.css'                    // Core CSS của PrimeVue
+import 'primeicons/primeicons.css'                              // Icons
+import 'primeflex/primeflex.css'                                // Flexbox và grid utilities
 
-// Import CSS chung của ứng dụng (đã bao gồm Tailwind CSS)
-import './assets/main.css'
+// Import CSS custom của ứng dụng sau các thư viện
+import './assets/main.scss'
 
 const app = createApp(App)
 
 // Sử dụng PrimeVue
 app.use(PrimeVue, {
   ripple: true,
-  inputStyle: 'filled',
-  unstyled: true,
+  inputStyle: 'filled'
 })
 app.use(ToastService)
 app.use(router)
@@ -53,4 +53,4 @@ app.component('DataTable', DataTable)
 app.component('Column', Column)
 app.component('Dialog', Dialog)
 
-app.mount('#app') 
+app.mount('#app')

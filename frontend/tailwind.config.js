@@ -1,6 +1,5 @@
-import type { Config } from 'tailwindcss'
-
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
@@ -9,11 +8,16 @@ export default {
     extend: {
       colors: {
         'primary': 'var(--primary-color)',
+        'primary-dark': 'var(--primary-600)',
         'primary-light': 'var(--primary-300)',
-        'primary-dark': 'var(--primary-700)',
+        'primary-text': 'var(--primary-color-text)',
         'surface-ground': 'var(--surface-ground)',
         'surface-section': 'var(--surface-section)',
+        'surface-card': 'var(--surface-card)',
         'surface-border': 'var(--surface-border)',
+      },
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
       },
       spacing: {
         'xs': '0.25rem',
@@ -25,4 +29,4 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config 
+} 

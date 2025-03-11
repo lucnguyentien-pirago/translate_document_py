@@ -19,7 +19,7 @@ import tempfile
 
 # Lấy đường dẫn đến thư mục resources/fonts
 CURRENT_DIR = pathlib.Path(__file__).parent.absolute()
-ROOT_DIR = CURRENT_DIR.parent.parent.parent
+ROOT_DIR = CURRENT_DIR.parent.parent
 FONTS_DIR = ROOT_DIR / "resources" / "fonts"
 
 # Base64 encoded minimal Vietnamese font (just to ensure we have a working font)
@@ -203,12 +203,12 @@ class PDFHandler:
             available_fonts = list(pdfmetrics._fonts.keys())
             print(f"DEBUG: Các font có sẵn: {available_fonts}")
             
-            # Ưu tiên font đã mã hóa sẵn trước, sau đó đến các font thường dùng cho Unicode
-            unicode_fonts = ['VietFont', 'DejaVuSans', 'NotoSans-Regular', 'Arial', 'FreeSans']
+            # Ưu tiên font Roboto, sau đó đến các font thường dùng cho Unicode
+            unicode_fonts = ['Roboto-Regular', 'Roboto-Bold', 'VietFont', 'Arial', 'FreeSans']
             for font in unicode_fonts:
                 if font in available_fonts:
                     content_font = font
-                    title_font = font
+                    title_font = 'Roboto-Bold' if 'Roboto-Bold' in available_fonts else font
                     print(f"DEBUG: Đã chọn font Unicode: {font}")
                     break
             
@@ -316,7 +316,7 @@ class PDFHandler:
             # Chọn font Unicode tốt nhất có sẵn
             available_fonts = list(pdfmetrics._fonts.keys())
             font_name = 'Helvetica'  # Font mặc định
-            unicode_fonts = ['VietFont', 'DejaVuSans', 'NotoSans-Regular', 'Arial']
+            unicode_fonts = ['Roboto-Regular', 'Roboto-Bold', 'VietFont', 'Arial']
             for font in unicode_fonts:
                 if font in available_fonts:
                     font_name = font

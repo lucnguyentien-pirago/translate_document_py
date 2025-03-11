@@ -26,12 +26,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import type { PropType } from 'vue'
 import type { DocumentContent, TranslationViewProps, TranslationViewEmits } from '@/types'
 
 export default defineComponent({
   name: 'TranslationPdfView',
-  
+
   props: {
     content: {
       type: Array as PropType<DocumentContent[]>,
@@ -52,7 +53,7 @@ export default defineComponent({
 
     // Khởi tạo translations từ translatedContent hoặc content
     watch(() => props.content, (newContent) => {
-      translations.value = newContent.map(item => 
+      translations.value = newContent.map(item =>
         item.translated_content || item.content
       )
     }, { immediate: true })
@@ -60,7 +61,7 @@ export default defineComponent({
     // Cập nhật khi có thay đổi từ bên ngoài
     watch(() => props.translatedContent, (newTranslated) => {
       if (newTranslated) {
-        translations.value = newTranslated.map(item => 
+        translations.value = newTranslated.map(item =>
           item.translated_content || item.content
         )
       }

@@ -28,7 +28,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import type { PropType } from 'vue'
 import type { DocumentContent, TranslationViewProps, TranslationViewEmits } from '@/types'
 
 export default defineComponent({

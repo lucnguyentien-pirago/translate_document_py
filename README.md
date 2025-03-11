@@ -14,6 +14,9 @@
 Dự án được chia thành hai phần chính:
 
 - **Backend**: Sử dụng Python với FastAPI
+  - `backend/resources/fonts`: Thư mục chứa font cho PDF
+  - `backend/app`: Mã nguồn chính của backend
+  - `backend/setup_fonts.py`: Script cài đặt font
 - **Frontend**: Sử dụng Vue.js 3 với PrimeVue
 
 ## Yêu cầu hệ thống
@@ -41,7 +44,7 @@ cd backend
 python setup_fonts.py
 ```
 
-Script này sẽ tự động tải các font cần thiết và kiểm tra môi trường của bạn.
+Script này sẽ tự động tải font Roboto và kiểm tra môi trường của bạn.
 
 3. Cài đặt Tesseract OCR:
    - Windows: Tải từ https://github.com/UB-Mannheim/tesseract/wiki
@@ -99,13 +102,12 @@ Nếu PDF xuất ra hiển thị các ô vuông thay vì ký tự tiếng Việt
    cd backend
    python setup_fonts.py
    ```
-   Script này sẽ tự động tải và cài đặt các font Unicode hỗ trợ tiếng Việt.
+   Script này sẽ tự động tải font Roboto hỗ trợ tiếng Việt.
 
 2. **Kiểm tra thư mục fonts**:
    Đảm bảo thư mục `backend/resources/fonts` chứa các file:
-   - DejaVuSans.ttf
-   - DejaVuSans-Bold.ttf
-   - NotoSansVietnamese-Regular.ttf
+   - Roboto-Regular.ttf
+   - Roboto-Bold.ttf
 
 3. **Sửa phương pháp tạo PDF**:
    Mặc định, hệ thống sẽ thử hai phương pháp tạo PDF (Platypus và Canvas) để đảm bảo tiếng Việt hiển thị đúng. Nếu vẫn có vấn đề, bạn có thể chỉnh sửa file `backend/app/utils/pdf_handler.py` để chỉ sử dụng phương pháp Canvas.

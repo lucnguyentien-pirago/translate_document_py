@@ -12,13 +12,13 @@ import tempfile
 import urllib.request
 import platform
 import shutil
+from pathlib import Path
 
 def main():
     print("===== KIỂM TRA VÀ CÀI ĐẶT FONTS CHO TIẾNG VIỆT =====")
     
     # Đường dẫn đến thư mục fonts
-    current_dir = pathlib.Path(__file__).parent.absolute()
-    root_dir = current_dir
+    root_dir = Path(__file__).parent
     fonts_dir = root_dir / "resources" / "fonts"
     
     # Tạo thư mục fonts nếu chưa tồn tại
@@ -29,16 +29,12 @@ def main():
     # Danh sách font cần tải
     fonts = [
         {
-            "name": "DejaVuSans.ttf",
-            "url": "https://github.com/dejavu-fonts/dejavu-fonts/raw/master/ttf/DejaVuSans.ttf"
+            "name": "Roboto-Regular.ttf",
+            "url": "https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Regular.ttf"
         },
         {
-            "name": "DejaVuSans-Bold.ttf",
-            "url": "https://github.com/dejavu-fonts/dejavu-fonts/raw/master/ttf/DejaVuSans-Bold.ttf" 
-        },
-        {
-            "name": "NotoSansVietnamese-Regular.ttf",
-            "url": "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansVietnamese/NotoSansVietnamese-Regular.ttf"
+            "name": "Roboto-Bold.ttf",
+            "url": "https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Bold.ttf"
         }
     ]
     
@@ -50,6 +46,7 @@ def main():
         else:
             print(f"Đang tải font {font['name']}...")
             try:
+                # Tải trực tiếp font từ GitHub
                 urllib.request.urlretrieve(font["url"], font_path)
                 print(f"Đã tải font {font['name']} thành công.")
             except Exception as e:

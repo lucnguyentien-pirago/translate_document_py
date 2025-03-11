@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* CSS chung cho toàn bộ ứng dụng */
 
 /* Reset các style mặc định */
@@ -40,4 +44,71 @@ a {
 
 a:hover {
   text-decoration: underline;
-} 
+}
+
+@layer base {
+  :root {
+    --primary-color: #6366F1;
+    --primary-color-text: #ffffff;
+    --primary-300: #A5B4FC;
+    --primary-600: #4F46E5;
+    --primary-700: #4338CA;
+    --surface-ground: #F8F9FA;
+    --surface-section: #ffffff;
+    --surface-card: #ffffff;
+    --surface-border: #DEE2E6;
+    --text-color: #495057;
+    --text-color-secondary: #6C757D;
+    --font-family: 'Roboto', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-family);
+    background-color: var(--surface-ground);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply flex flex-col min-h-screen;
+  }
+
+  .app-header {
+    @apply bg-primary text-white py-2 px-4 shadow-md;
+  }
+
+  .app-title {
+    @apply text-center;
+  }
+
+  .app-title h1 {
+    @apply text-3xl font-semibold m-0;
+  }
+
+  .app-title p {
+    @apply text-base mt-1 opacity-90;
+  }
+
+  .app-content {
+    @apply flex-1 p-4 max-w-6xl mx-auto w-full;
+  }
+
+  .app-footer {
+    @apply bg-surface-section py-3 text-center text-sm text-gray-600 border-t border-surface-border;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-md transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-600;
+  }
+}

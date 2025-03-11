@@ -24,8 +24,8 @@ import 'primevue/resources/themes/lara-light-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 
-// Import CSS chung của ứng dụng
-import './assets/styles/main.css'
+// Import CSS chung của ứng dụng (đã bao gồm Tailwind CSS)
+import './assets/main.css'
 
 const app = createApp(App)
 
